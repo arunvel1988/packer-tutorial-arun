@@ -1,0 +1,47 @@
+nano docker-example.pkr.hcl
+#################
+
+packer {
+  required_plugins {
+    docker = {
+      source  = "github.com/hashicorp/docker"
+      version = ">= 1.0.0"
+    }
+  }
+}
+
+# 🔹 First image
+source "docker" "ubuntu1" {
+  image  = "ubuntu:22.04"
+  commit = true
+}
+
+# 🔹 Second image
+source "docker" "ubuntu2" {
+  image  = "ubuntu:22.04"
+  commit = true
+}
+
+# 🔹 Build block (common steps)
+build {
+  sources = [
+    "source.docker.ubuntu1",
+    "source.docker.ubuntu2"
+  ]
+
+  provisioner "shell" {
+    inline = [
+      "apt-get update",
+      "apt-get install -y nginx",
+      "echo 'Hello from Packer Parallel Build' > /var/www/html/index.html"
+    ]
+  }
+}
+
+
+########################
+
+packer init .
+packer build docker-example.pkr.hcl
+
+###################
