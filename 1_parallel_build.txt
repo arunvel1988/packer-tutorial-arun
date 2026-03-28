@@ -45,3 +45,8 @@ packer init .
 packer build docker-example.pkr.hcl
 
 ###################
+docker images
+
+docker run -d -p 8080:80 <IMAGE_ID>
+
+
